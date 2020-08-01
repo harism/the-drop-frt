@@ -14,4 +14,4 @@ Music: Brothomstates & Crankshaft: Wekilldaenemy (Low Orbit Satellite & Reii rem
 
 ### Instructions
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/I6wRK5Gmp1g?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://youtu.be/I6wRK5Gmp1g
