@@ -10,4 +10,4 @@ This is my first ever realtime demo I will release on pouet.net also.
 ### Credits
 
 Music: Brothomstates & Crankshaft: Wekilldaenemy (Low Orbit Satellite & Reii remodel)
-Rest: me and shadertoy.com shaderers (see source code for proper credits)
+<br/>Rest: me and shadertoy.com shaderers (see source code for proper credits)
