@@ -18,6 +18,8 @@ set(SOURCE_FILES
 
 set(SHADER_FILES
   shaders/common.metal
+  shaders/logo.metal
+  shaders/screenquad.metal
 )
 
 set(RESOURCES
@@ -61,4 +63,5 @@ target_link_libraries(
   "-framework Cocoa"
   "-framework Metal"
   "-framework MetalKit"
+  "-framework AVFoundation"
 )

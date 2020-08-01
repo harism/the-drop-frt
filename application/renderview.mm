@@ -11,16 +11,19 @@
 -(instancetype)frameRect:(const CGRect&)frameRect
 {
     id<MTLDevice> device = MTLCreateSystemDefaultDevice();
+
     if (self = [super initWithFrame:frameRect device:device])
     {
         _renderViewDelegate = [[RenderViewDelegate alloc] initWithRenderView:self];
         [self setDelegate:_renderViewDelegate];
      }
+
     return self;
 }
 
 -(void)dealloc
 {
+    [_renderViewDelegate release];
     [super dealloc];
 }
 
