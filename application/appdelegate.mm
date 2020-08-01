@@ -1,10 +1,11 @@
 #import "appdelegate.h"
 #import <Cocoa/Cocoa.h>
+#import "renderview.h"
 
 @implementation AppDelegate
 {
-  NSWindow* _window;
-
+    NSWindow* _window;
+    RenderView* _renderView;
 }
 
 -(id) init
@@ -26,6 +27,7 @@
         _window.contentAspectRatio = NSMakeSize(2, 1);
         _window.minSize = NSMakeSize(300, 150);
         _window.title = @"The Microphone Drop";
+        _renderView = [[RenderView alloc] frameRect:contentSize];
     }
     return self;
 }
@@ -33,12 +35,14 @@
 -(void) dealloc
 {
     [_window release];
+    [_renderView release];
     [super dealloc];
 }
 
 -(void)applicationWillFinishLaunching:(NSNotification*)pNotification
 {
     [[_window standardWindowButton:NSWindowZoomButton] setEnabled:NO];
+    [_window setContentView:_renderView];
     [_window center];
 }
 

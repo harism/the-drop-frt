@@ -5,11 +5,15 @@ set(TARGET_NAME TheDrop)
 
 set(HEADER_FILES
   application/appdelegate.h
+  application/renderview.h
+  application/renderviewdelegate.h
 )
 
 set(SOURCE_FILES
   application/appdelegate.mm
   application/main.m
+  application/renderview.mm
+  application/renderviewdelegate.mm
 )
 
 set(SHADER_FILES
@@ -25,6 +29,11 @@ source_group("Header" FILE ${HEADER_FILES})
 source_group("Source" FILES ${SOURCE_FILES})
 source_group("Shader" FILES ${SHADER_FILES})
 source_group("Resources" FILES ${RESOURCES})
+
+set_source_files_properties(
+  ${SHADER_FILES} PROPERTIES
+  LANGUAGE METAL
+)
 
 set_source_files_properties(
   ${RESOURCES} PROPERTIES
@@ -48,5 +57,8 @@ set_target_properties(
 )
 
 target_link_libraries(
-  ${TARGET_NAME} "-framework Cocoa"
+  ${TARGET_NAME}
+  "-framework Cocoa"
+  "-framework Metal"
+  "-framework MetalKit"
 )
