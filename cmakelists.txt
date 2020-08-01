@@ -3,7 +3,12 @@ cmake_minimum_required(VERSION 3.18)
 project(TheDrop)
 set(TARGET_NAME TheDrop)
 
+set(HEADER_FILES
+  application/appdelegate.h
+)
+
 set(SOURCE_FILES
+  application/appdelegate.mm
   application/main.m
 )
 
@@ -16,6 +21,7 @@ set(RESOURCES
   the_drop.icns
 )
 
+source_group("Header" FILE ${HEADER_FILES})
 source_group("Source" FILES ${SOURCE_FILES})
 source_group("Shader" FILES ${SHADER_FILES})
 source_group("Resources" FILES ${RESOURCES})
@@ -27,6 +33,7 @@ set_source_files_properties(
 
 add_executable(
   ${TARGET_NAME}
+  ${HEADER_FILES}
   ${SOURCE_FILES}
   ${SHADER_FILES}
   ${RESOURCES}
