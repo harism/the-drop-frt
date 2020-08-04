@@ -73,6 +73,7 @@
             [RenderViewDelegate loadFunction:_library functionName:@"RenderStarNest"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderVignette"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderSpores"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderVoronoi"],
             nil];
 
 

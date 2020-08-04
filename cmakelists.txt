@@ -24,6 +24,7 @@ set(SHADER_FILES
   shaders/spores.metal
   shaders/star_nest.metal
   shaders/vignette.metal
+  shaders/voronoi.metal
 )
 
 set(RESOURCES
