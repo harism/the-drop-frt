@@ -19,7 +19,10 @@ set(SOURCE_FILES
 set(SHADER_FILES
   shaders/common.metal
   shaders/logo.metal
+  shaders/main.metal
   shaders/screenquad.metal
+  shaders/star_nest.metal
+  shaders/vignette.metal
 )
 
 set(RESOURCES

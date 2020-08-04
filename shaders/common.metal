@@ -6,5 +6,6 @@ using namespace metal;
 struct VertexData
 {
     float4 position [[position]];
-    float4 color;
+    float2 screenPosition;
+    float2 texturePosition;
 };
