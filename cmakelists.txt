@@ -18,8 +18,11 @@ set(SOURCE_FILES
 
 set(SHADER_FILES
   shaders/common.metal
+  shaders/confetti_canon.metal
+  shaders/electric.metal
   shaders/logo.metal
   shaders/main.metal
+  shaders/playground.metal
   shaders/screenquad.metal
   shaders/spores.metal
   shaders/star_nest.metal

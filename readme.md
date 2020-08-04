@@ -17,7 +17,10 @@ Music: Brothomstates & Crankshaft: Wekilldaenemy (Low Orbit Satellite & Reii rem
 <a href="https://www.shadertoy.com/view/lsKSWR">Ippokratis</a>
 <a href="https://www.shadertoy.com/view/4lsXWj">mprice</a>
 <a href="https://www.shadertoy.com/view/ldl3W8">iq</a>
+<a href="https://www.shadertoy.com/view/ldlXRS">nimitz</a>
+<a href="https://www.shadertoy.com/view/4dfXDn">Maarten</a>
+<a href="https://www.shadertoy.com/view/MddyWX">Flopine</a>
 
 ### Personal note
 
-I like this song: https://youtu.be/mauV2NdCs60
+I like this song: https://youtu.be/n6R0t_AVIXs

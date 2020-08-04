@@ -70,10 +70,13 @@
         [renderDescriptor release];
 
         _renderBackgroundPipelines = [[NSArray alloc] initWithObjects:
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderElectric"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderStarNest"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderVignette"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderSpores"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderVoronoi"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderPlayground"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderConfettiCanon"],
             nil];
 
 
@@ -123,7 +126,7 @@
         }
     }
 
-    if (currentTimeSeconds >= 10.0 && _backgroundTimer <= currentTimeSeconds)
+    if (currentTimeSeconds >= 56.5 && _backgroundTimer <= currentTimeSeconds)
     {
         _backgroundIndex = rand() % [_renderBackgroundPipelines count];
         _backgroundTimer = currentTimeSeconds + 1.0;
