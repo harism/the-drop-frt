@@ -14,6 +14,7 @@ Music: Brothomstates & Crankshaft: Wekilldaenemy (Low Orbit Satellite & Reii rem
 <br/>Rest: me and shadertoy.com shaderers (see names below and corresponding links)
 <br/></br>
 <a href="https://www.shadertoy.com/view/XlfGRj">Kali</a>
+<a href="https://www.shadertoy.com/view/lsKSWR">Ippokratis</a>
 
 ### Personal note
 
