@@ -1,7 +1,7 @@
 # The Microphone Drop -demo
 
 This is my first ever realtime demo I will release on pouet.net also.
-I made it for my one man demogroup called FailRight (FRT).
+I made it for my one man demogroup called Failright (FRT).
 
 ### Requirements
 
@@ -15,6 +15,7 @@ Music: Brothomstates & Crankshaft: Wekilldaenemy (Low Orbit Satellite & Reii rem
 <br/></br>
 <a href="https://www.shadertoy.com/view/XlfGRj">Kali</a>
 <a href="https://www.shadertoy.com/view/lsKSWR">Ippokratis</a>
+<a href="https://www.shadertoy.com/view/4lsXWj">mprice</a>
 
 ### Personal note
 

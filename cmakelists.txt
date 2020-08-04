@@ -21,6 +21,7 @@ set(SHADER_FILES
   shaders/logo.metal
   shaders/main.metal
   shaders/screenquad.metal
+  shaders/spores.metal
   shaders/star_nest.metal
   shaders/vignette.metal
 )

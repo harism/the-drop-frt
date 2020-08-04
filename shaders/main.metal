@@ -18,7 +18,11 @@ fragment float4 RenderMain(VertexData in [[stage_in]],
     logoSample += logoTexture.sample(commonSampler, texturePosition + float2(D, -D));
     logoSample *= 0.25;
 
-    const float4 backgroundSample = backgroundTexture.sample(commonSampler, texturePosition);
+    float4 backgroundSample = backgroundTexture.sample(commonSampler, texturePosition + float2(D, D));
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePosition + float2(-D, D));
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePosition + float2(-D, -D));
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePosition + float2(D, -D));
+    backgroundSample *= 0.25;
 
     float4 outColor = mix(backgroundSample, logoSample, logoSample.a);
     float luminance = (outColor.r + outColor.g + outColor.b) * 0.5;
@@ -29,5 +33,5 @@ fragment float4 RenderMain(VertexData in [[stage_in]],
     float vig = uv.x * uv.y * 5.0;
     vig = pow(vig, 0.5);
     return outColor * vig;
-    //return float4(vig, vig, vig, 1.0);
+
 }

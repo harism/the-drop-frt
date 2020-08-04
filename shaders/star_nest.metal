@@ -27,8 +27,8 @@ fragment float4 RenderStarNest(constant float* time [[buffer(0)]],
 	float3 dir = float3(uv * zoom, 1.0);
 
 	//mouse rotation
-	float a1 = 0.1;
-	float a2 = 0.3;
+	float a1 = 0.1 + fmod(*time * 0.001, 1.0);
+	float a2 = 0.3 + fmod(*time * 0.001, 1.0);
 	float2x2 rot1 = float2x2(cos(a1), sin(a1), -sin(a1), cos(a1));
 	float2x2 rot2 = float2x2(cos(a2), sin(a2), -sin(a2), cos(a2));
 	dir.xz = dir.xz * rot1;

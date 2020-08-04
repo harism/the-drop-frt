@@ -72,6 +72,7 @@
         _renderBackgroundPipelines = [[NSArray alloc] initWithObjects:
             [RenderViewDelegate loadFunction:_library functionName:@"RenderStarNest"],
             [RenderViewDelegate loadFunction:_library functionName:@"RenderVignette"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderSpores"],
             nil];
 
 
