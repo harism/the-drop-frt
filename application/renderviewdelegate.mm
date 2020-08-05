@@ -14,15 +14,15 @@
     AVAudioPlayer* _musicPlayer;
 
     id<MTLRenderPipelineState> _renderMainPipeline;
-    id<MTLRenderPipelineState> _renderLogoPipeline;
+    id<MTLRenderPipelineState> _renderEnginePipeline;
 
     int _backgroundIndex;
     NSTimeInterval _backgroundTimer;
     NSArray* _renderBackgroundPipelines;
 
-    id<MTLTexture> _logoTexture;
+    id<MTLTexture> _engineTexture;
     id<MTLTexture> _backgroundTexture;
-    MTLRenderPassDescriptor* _logoRenderPassDescriptor;
+    MTLRenderPassDescriptor* _engineRenderPassDescriptor;
     MTLRenderPassDescriptor* _backgroundRenderPassDescriptor;
 }
 
@@ -62,40 +62,33 @@
         renderDescriptor.colorAttachments[0].pixelFormat = renderView.colorPixelFormat;
         _renderMainPipeline = [_device newRenderPipelineStateWithDescriptor:renderDescriptor error:nil];
 
-        renderDescriptor.fragmentFunction = [_library newFunctionWithName:@"RenderLogo"];
+        renderDescriptor.fragmentFunction = [_library newFunctionWithName:@"RenderEngine"];
         renderDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatRGBA16Float;
-        _renderLogoPipeline = [_device newRenderPipelineStateWithDescriptor:renderDescriptor error:nil];
+        _renderEnginePipeline = [_device newRenderPipelineStateWithDescriptor:renderDescriptor error:nil];
 
         [renderScreenFunction release];
         [renderDescriptor release];
 
         _renderBackgroundPipelines = [[NSArray alloc] initWithObjects:
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderElectric"],
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderStarNest"],
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderVignette"],
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderSpores"],
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderVoronoi"],
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderPlayground"],
-            [RenderViewDelegate loadFunction:_library functionName:@"RenderConfettiCanon"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderBlank"],
             nil];
 
+        MTLTextureDescriptor* engineTextureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA16Float width:1920 height:1080 mipmapped:NO];
+        engineTextureDescriptor.storageMode = MTLStorageModePrivate;
+        engineTextureDescriptor.usage = MTLTextureUsageShaderRead | MTLTextureUsageRenderTarget;
+        _engineTexture = [_device newTextureWithDescriptor:engineTextureDescriptor];
+        [engineTextureDescriptor release];
 
-        MTLTextureDescriptor* logoTextureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA16Float width:1920 height:1080 mipmapped:NO];
-        logoTextureDescriptor.storageMode = MTLStorageModePrivate;
-        logoTextureDescriptor.usage = MTLTextureUsageShaderRead | MTLTextureUsageRenderTarget;
-        _logoTexture = [_device newTextureWithDescriptor:logoTextureDescriptor];
-        [logoTextureDescriptor release];
-
-        MTLTextureDescriptor* backgroundTextureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA16Float width:1280 height:720 mipmapped:NO];
+        MTLTextureDescriptor* backgroundTextureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA16Float width:1920 height:1080 mipmapped:NO];
         backgroundTextureDescriptor.storageMode = MTLStorageModePrivate;
         backgroundTextureDescriptor.usage = MTLTextureUsageShaderRead | MTLTextureUsageRenderTarget;
         _backgroundTexture = [_device newTextureWithDescriptor:backgroundTextureDescriptor];
         [backgroundTextureDescriptor release];
 
-        _logoRenderPassDescriptor = [MTLRenderPassDescriptor new];
-        _logoRenderPassDescriptor.colorAttachments[0].texture = _logoTexture;
-        _logoRenderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionLoad;
-        _logoRenderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
+        _engineRenderPassDescriptor = [MTLRenderPassDescriptor new];
+        _engineRenderPassDescriptor.colorAttachments[0].texture = _engineTexture;
+        _engineRenderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionLoad;
+        _engineRenderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
 
         _backgroundRenderPassDescriptor = [MTLRenderPassDescriptor new];
         _backgroundRenderPassDescriptor.colorAttachments[0].texture = _backgroundTexture;
@@ -142,15 +135,15 @@
 
     if (auto renderPassDescriptor = [view currentRenderPassDescriptor])
     {
-        auto logoEncoder = [commandBuffer renderCommandEncoderWithDescriptor:_logoRenderPassDescriptor];
+        auto logoEncoder = [commandBuffer renderCommandEncoderWithDescriptor:_engineRenderPassDescriptor];
         [logoEncoder setViewport: (MTLViewport) { 0.0, 0.0, 1920, 1080, -1.0, 1.0 }];
-        [logoEncoder setRenderPipelineState:_renderLogoPipeline];
+        [logoEncoder setRenderPipelineState:_renderEnginePipeline];
         [logoEncoder setFragmentBytes:&time length:sizeof(float) atIndex:0];
         [logoEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];
         [logoEncoder endEncoding];
 
         auto backgroundEncoder = [commandBuffer renderCommandEncoderWithDescriptor:_backgroundRenderPassDescriptor];
-        [backgroundEncoder setViewport: (MTLViewport) { 0.0, 0.0, 1280, 720, -1.0, 1.0 }];
+        [backgroundEncoder setViewport: (MTLViewport) { 0.0, 0.0, 1920, 1080, -1.0, 1.0 }];
         [backgroundEncoder setRenderPipelineState:[_renderBackgroundPipelines objectAtIndex:_backgroundIndex]];
         [backgroundEncoder setFragmentBytes:&time length:sizeof(float) atIndex:0];
         [backgroundEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];
@@ -159,7 +152,7 @@
         CGSize viewportSize = [view drawableSize];
         auto mainEncoder = [commandBuffer renderCommandEncoderWithDescriptor: renderPassDescriptor];
         [mainEncoder setViewport:(MTLViewport) { 0.0, 0.0, viewportSize.width, viewportSize.height, -1.0, 1.0 }];
-        [mainEncoder setFragmentTexture:_logoTexture atIndex:0];
+        [mainEncoder setFragmentTexture:_engineTexture atIndex:0];
         [mainEncoder setFragmentTexture:_backgroundTexture atIndex:1];
         [mainEncoder setRenderPipelineState:_renderMainPipeline];
         [mainEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];

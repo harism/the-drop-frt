@@ -26,7 +26,7 @@
         _window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
         _window.contentAspectRatio = NSMakeSize(2, 1);
         _window.minSize = NSMakeSize(300, 150);
-        _window.title = @"The Microphone Drop by Failright";
+        _window.title = @"The Digi Bounce by Failright";
         _renderView = [[RenderView alloc] frameRect:contentSize];
     }
     return self;

@@ -17,17 +17,11 @@ set(SOURCE_FILES
 )
 
 set(SHADER_FILES
+  shaders/blank.metal
   shaders/common.metal
-  shaders/confetti_canon.metal
-  shaders/electric.metal
-  shaders/logo.metal
+  shaders/engine.metal
   shaders/main.metal
-  shaders/playground.metal
   shaders/screenquad.metal
-  shaders/spores.metal
-  shaders/star_nest.metal
-  shaders/vignette.metal
-  shaders/voronoi.metal
 )
 
 set(RESOURCES
