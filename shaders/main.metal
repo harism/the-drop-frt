@@ -12,7 +12,6 @@ fragment float4 RenderMain(VertexData in [[stage_in]],
     texturePosition = texturePosition * 0.5 + 0.5;
     float2 texturePixelPosition = texturePosition * float2(1920.0, 1080.0);
 
-    const float D = 0.001;
     float4 engineSample = engineTexture.sample(commonSampler, texturePixelPosition);
     engineSample += engineTexture.sample(commonSampler, texturePixelPosition + float2(1.0, 1.0));
     engineSample += engineTexture.sample(commonSampler, texturePixelPosition + float2(1.0, -1.0));
@@ -21,6 +20,12 @@ fragment float4 RenderMain(VertexData in [[stage_in]],
     engineSample *= 0.2;
 
     float4 backgroundSample = backgroundTexture.sample(commonSampler, texturePixelPosition);
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePixelPosition + float2(1.0, 1.0));
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePixelPosition + float2(1.0, -1.0));
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePixelPosition + float2(-1.0, 1.0));
+    backgroundSample += backgroundTexture.sample(commonSampler, texturePixelPosition + float2(-1.0, -1.0));
+    backgroundSample *= 0.2;
+
     float4 outColor = mix(backgroundSample, engineSample, engineSample.a);
 
     float luminance = (outColor.r + outColor.g + outColor.b) * 0.5;

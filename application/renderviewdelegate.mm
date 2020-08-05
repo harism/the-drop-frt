@@ -24,6 +24,10 @@
     id<MTLTexture> _backgroundTexture;
     MTLRenderPassDescriptor* _engineRenderPassDescriptor;
     MTLRenderPassDescriptor* _backgroundRenderPassDescriptor;
+
+    int _powerIndex;
+    float _peakPowerValues[256];
+    float _averagePowerValues[256];
 }
 
 +(nonnull id<MTLRenderPipelineState>)loadFunction:(nonnull id<MTLLibrary>)library functionName:(nonnull NSString*)functionName
@@ -48,10 +52,15 @@
         _backgroundIndex = 0;
         _backgroundTimer = 0.0;
 
+        _powerIndex = 0;
+        memset(_peakPowerValues, 0, sizeof(float) * 256);
+        memset(_averagePowerValues, 0, sizeof(float) * 256);
+
         if (auto musicPath = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"mp3"])
         {
             NSURL* musicUrl = [NSURL fileURLWithPath:musicPath];
             _musicPlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:musicUrl error:nil];
+            _musicPlayer.meteringEnabled = YES;
         }
 
         auto renderScreenFunction = [_library newFunctionWithName:@"RenderScreenQuad"];
@@ -71,6 +80,8 @@
 
         _renderBackgroundPipelines = [[NSArray alloc] initWithObjects:
             [RenderViewDelegate loadFunction:_library functionName:@"RenderBlank"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderBackground"],
+            [RenderViewDelegate loadFunction:_library functionName:@"RenderDark"],
             nil];
 
         MTLTextureDescriptor* engineTextureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA16Float width:1920 height:1080 mipmapped:NO];
@@ -119,7 +130,7 @@
         }
     }
 
-    if (currentTimeSeconds >= 56.5 && _backgroundTimer <= currentTimeSeconds)
+    if (currentTimeSeconds >= 10.0 && _backgroundTimer <= currentTimeSeconds)
     {
         _backgroundIndex = rand() % [_renderBackgroundPipelines count];
         _backgroundTimer = currentTimeSeconds + 1.0;
@@ -130,22 +141,31 @@
         _timeAdjust += ((rand() % 1995) / 1995.0) * 0.1;
     }
 
+    [_musicPlayer updateMeters];
     const float time = [_musicPlayer currentTime] + _timeAdjust;
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+    const float peakPower = [_musicPlayer peakPowerForChannel:0];
+    const float averagePower = [_musicPlayer averagePowerForChannel:0];
+
+    _peakPowerValues[_powerIndex] = peakPower;
+    _averagePowerValues[_powerIndex] = averagePower;
 
     if (auto renderPassDescriptor = [view currentRenderPassDescriptor])
     {
-        auto logoEncoder = [commandBuffer renderCommandEncoderWithDescriptor:_engineRenderPassDescriptor];
-        [logoEncoder setViewport: (MTLViewport) { 0.0, 0.0, 1920, 1080, -1.0, 1.0 }];
-        [logoEncoder setRenderPipelineState:_renderEnginePipeline];
-        [logoEncoder setFragmentBytes:&time length:sizeof(float) atIndex:0];
-        [logoEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];
-        [logoEncoder endEncoding];
+        id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+        auto engineEncoder = [commandBuffer renderCommandEncoderWithDescriptor:_engineRenderPassDescriptor];
+        [engineEncoder setViewport: (MTLViewport) { 0.0, 0.0, 1920, 1080, -1.0, 1.0 }];
+        [engineEncoder setRenderPipelineState:_renderEnginePipeline];
+        [engineEncoder setFragmentBytes:&time length:sizeof(float) atIndex:0];
+        [engineEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];
+        [engineEncoder endEncoding];
 
         auto backgroundEncoder = [commandBuffer renderCommandEncoderWithDescriptor:_backgroundRenderPassDescriptor];
         [backgroundEncoder setViewport: (MTLViewport) { 0.0, 0.0, 1920, 1080, -1.0, 1.0 }];
         [backgroundEncoder setRenderPipelineState:[_renderBackgroundPipelines objectAtIndex:_backgroundIndex]];
         [backgroundEncoder setFragmentBytes:&time length:sizeof(float) atIndex:0];
+        [backgroundEncoder setFragmentBytes:&_powerIndex length:sizeof(int) atIndex:1];
+        [backgroundEncoder setFragmentBytes:&_peakPowerValues length:sizeof(float) * 256 atIndex:2];
+        [backgroundEncoder setFragmentBytes:&_averagePowerValues length:sizeof(float) * 256 atIndex:3];
         [backgroundEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];
         [backgroundEncoder endEncoding];
 
@@ -159,9 +179,10 @@
         [mainEncoder endEncoding];
 
         [commandBuffer presentDrawable:view.currentDrawable];
+        [commandBuffer commit];
     }
 
-    [commandBuffer commit];
+    _powerIndex = ++_powerIndex & 0xFF;
 }
 
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size

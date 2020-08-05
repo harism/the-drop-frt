@@ -17,8 +17,10 @@ set(SOURCE_FILES
 )
 
 set(SHADER_FILES
+  shaders/background.metal
   shaders/blank.metal
   shaders/common.metal
+  shaders/dark.metal
   shaders/engine.metal
   shaders/main.metal
   shaders/screenquad.metal
